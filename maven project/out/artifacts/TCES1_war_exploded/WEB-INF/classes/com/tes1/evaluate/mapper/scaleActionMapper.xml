@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tes1.evaluate.mapper.scaleActionMapper">
+  <resultMap id="BaseResultMap" type="com.tes1.evaluate.domain.scaleAction">
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="scaleId" jdbcType="INTEGER" property="scaleId" />
+    <result column="actionId" jdbcType="INTEGER" property="actionId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id, scaleId, actionId
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from scaleaction
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from scaleaction
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tes1.evaluate.domain.scaleAction">
+    insert into scaleaction (Id, scaleId, actionId
+      )
+    values (#{id,jdbcType=INTEGER}, #{scaleId,jdbcType=INTEGER}, #{actionId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tes1.evaluate.domain.scaleAction">
+    insert into scaleaction
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        Id,
+      </if>
+      <if test="scaleId != null">
+        scaleId,
+      </if>
+      <if test="actionId != null">
+        actionId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="scaleId != null">
+        #{scaleId,jdbcType=INTEGER},
+      </if>
+      <if test="actionId != null">
+        #{actionId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tes1.evaluate.domain.scaleAction">
+    update scaleaction
+    <set>
+      <if test="scaleId != null">
+        scaleId = #{scaleId,jdbcType=INTEGER},
+      </if>
+      <if test="actionId != null">
+        actionId = #{actionId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tes1.evaluate.domain.scaleAction">
+    update scaleaction
+    set scaleId = #{scaleId,jdbcType=INTEGER},
+      actionId = #{actionId,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 查找功能ID -->
+  <select id="findActionId" parameterType="com.tes1.evaluate.domain.scaleAction" resultType="com.tes1.evaluate.domain.scaleAction">
+		SELECT * from scaleaction where scaleId in
+		<foreach item="sclesids" index="index" collection="list" open="(" separator="," close=")">  
+  			#{sclesids}  
+ 		</foreach>  
+	</select>
+<!-- 增加角色功能ID -->
+	 <insert id="addscaleAction" useGeneratedKeys="true" parameterType="com.tes1.evaluate.domain.scaleAction">  
+    <selectKey resultType="long" keyProperty="id" order="AFTER">  
+        SELECT  
+        LAST_INSERT_ID()  
+    </selectKey>  
+    INSERT INTO scaleaction (scaleId,actionId)   
+    VALUES  
+	    <foreach collection="list" item="item" index="index" separator="," close=";">  
+	        (#{item.actionId},#{item.scaleId})  
+	    </foreach>  
+	</insert>
+	<!-- 查找角色功能ID -->
+	  <select id="findscaleActionById" parameterType="com.tes1.evaluate.domain.scaleAction" resultType="com.tes1.evaluate.domain.scaleAction">
+		SELECT actionId from scaleaction where scaleId = #{scaleId}
+	</select>
+	<!-- 删除角色原有的功能id -->
+	<delete id="deletescaleActionById" parameterType="com.tes1.evaluate.domain.scaleAction">
+		DELETE FROM scaleaction
+		WHERE scaleId=#{scaleId}
+	</delete>
+		<!-- 增加角色的功能id -->
+	 <insert id="addscaleActionSecond" useGeneratedKeys="true" parameterType="com.tes1.evaluate.domain.scaleAction">  
+    <selectKey resultType="long" keyProperty="id" order="AFTER">  
+        SELECT  
+        LAST_INSERT_ID()  
+    </selectKey>  
+    INSERT INTO scaleaction (scaleId,actionId)   
+    VALUES  
+	    <foreach collection="list" item="item" index="index" separator="," close=";">  
+	        (#{item.scaleId},#{item.actionId})  
+	    </foreach>  
+	</insert>
+  
+</mapper>

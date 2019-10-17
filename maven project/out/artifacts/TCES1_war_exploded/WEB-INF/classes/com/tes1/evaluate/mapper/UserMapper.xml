@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tes1.evaluate.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.tes1.evaluate.domain.User">
+    <id column="user_id" jdbcType="INTEGER" property="Id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="classId" jdbcType="INTEGER" property="classId" />
+    <result column="depId" jdbcType="INTEGER" property="depId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id, username, password, classId, depId
+  </sql>
+  <!-- start -->
+  <select id="findUser" parameterType="com.tes1.evaluate.domain.User" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where username = #{username} and password = #{password}
+  </select>
+  
+     <select id="getUserList" resultType="com.tes1.evaluate.domain.User">
+    select Id,username,password,classId,depId
+    from user
+    where 1 = 1
+    <if test="filter != '%%'">  
+	    AND username LIKE #{filter,jdbcType=VARCHAR}  
+	</if>  
+  ORDER BY id
+    LIMIT #{page},#{rows}
+  </select>
+   <select id="getUserListTotal" parameterType="java.lang.String" resultType="java.lang.Integer">
+    SELECT count(*)    
+      FROM user 
+     WHERE 1=1
+     <if test="_parameter != '%%'">  
+	    AND username LIKE #{_parameter,jdbcType=VARCHAR}  
+	</if>  
+  </select>
+    <select id="findteachers"  resultType="com.tes1.evaluate.domain.User">
+   SELECT * FROM user where classId=0
+  </select>
+  
+   <select id="Userfind" parameterType="com.tes1.evaluate.domain.User" resultType="com.tes1.evaluate.domain.User">
+    select 
+    <include refid="Base_Column_List" />
+    from user where
+    1=1
+    <if test="username!=null and !username.equals('')">and username like replace(CONCAT(CONCAT('%', #{username}), '%'),' ','') </if>
+  </select>
+   <!-- 删除用户 -->
+  <delete id="deleteUserInfoByIds">  
+    DELETE a,b FROM userscale a LEFT JOIN user b ON a.userId = b.Id WHERE a.userId IN
+	<foreach collection="list" item="id" separator="," open="(" close=")">
+        #{id}
+    </foreach>  
+  </delete>  
+   <!-- 批量删除用户 -->
+   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">  
+    delete from user  
+    where Id = #{ids,jdbcType=INTEGER}  
+  </delete> 
+ 
+ <!-- 增加用户 -->
+  <insert id="addUser" parameterType="com.tes1.evaluate.domain.User" useGeneratedKeys="true">
+		INSERT INTO
+		user(username,password,classId,depId)
+		VALUES(#{username},#{password},#{classId},#{depId})
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+   		 </selectKey>
+ </insert> 
+ 
+ <select id="findUserById" parameterType="com.tes1.evaluate.domain.User" resultType="com.tes1.evaluate.domain.User">
+   SELECT 
+   <include refid="Base_Column_List" />
+   FROM user WHERE
+  id=#{id}
+ </select>
+ <update id="updateUserById" parameterType="com.tes1.evaluate.domain.User">
+		UPDATE  user SET
+		username=#{username},password=#{password},classId=#{classId},depId=#{depId}
+		WHERE id=#{id}
+</update>
+  <!-- end -->
+  <insert id="insert" parameterType="com.tes1.evaluate.domain.User">
+    insert into user (Id, username, password, 
+      classId, depId)
+    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{classId,jdbcType=INTEGER}, #{depId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tes1.evaluate.domain.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        Id,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="classId != null">
+        classId,
+      </if>
+      <if test="depId != null">
+        depId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="depId != null">
+        #{depId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tes1.evaluate.domain.User">
+    update user
+    <set>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="classId != null">
+        classId = #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="depId != null">
+        depId = #{depId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tes1.evaluate.domain.User">
+    update user
+    set username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      classId = #{classId,jdbcType=INTEGER},
+      depId = #{depId,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  
+</mapper>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EasyUI布局</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+     <!-- 引入JQuery -->
+      <script type="text/javascript" src="jquery-easyui-1.5.3/jquery.min.js"></script>
+      <!-- 引入EasyUI -->
+      <script type="text/javascript" src="jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+      <!-- 引入EasyUI的中文国际化js，让EasyUI支持中文 -->
+      <script type="text/javascript" src="jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+      <!-- 引入EasyUI的样式文件-->
+      <link rel="stylesheet" href="jquery-easyui-1.5.3/themes/default/easyui.css" type="text/css"/>
+      <!-- 引入EasyUI的图标样式文件-->
+      <link rel="stylesheet" href="jquery-easyui-1.5.3/themes/icon.css" type="text/css"/>
+  </head>
+  <!--给body指定class属性指定easy的easyui-layout样式，这样就可以 使用body创建easyui的layout -->
+  <body class="easyui-layout">
+      <!-- 布局中如果不需要north这个面板，那么可以删掉这个div --> 
+    <div data-options="region:'north',title:'North Title',split:true" style="height:100px;"></div>
+    <!-- 布局中如果不需要south这个面板，那么可以删掉这个div -->   
+    <div data-options="region:'south',title:'South Title',split:true" style="height:100px;"></div> 
+    <!-- 布局中如果不需要east这个面板，那么可以删掉这个div -->   
+    <div data-options="region:'east',iconCls:'icon-reload',title:'East',split:true" style="width:100px;"></div>
+    <!-- 布局中如果不需要west这个面板，那么可以删掉这个div -->  
+    <div data-options="region:'west',title:'West',split:true" style="width:100px;"></div>
+    <!--north，south， east，west这几个面板都可以删掉，唯有这个center面板一定不能删掉，否则使用easyui-layout就会出错 --> 
+    <div data-options="region:'center',title:'center title',href:'center.html'" style="padding:5px;"></div>  
+ </body>  
+  
+</html>

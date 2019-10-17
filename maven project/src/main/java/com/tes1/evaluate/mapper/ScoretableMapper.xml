@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tes1.evaluate.mapper.ScoretableMapper">
+
+
+    <select id="findScoretable" resultType="com.tes1.evaluate.domain.Scoretable">
+  select a.Id, teacherId,username,courseId,courseName,avgscore*100 as avgscore from avgscores a
+  inner join course b on b.Id=a.courseid
+  inner join user c  on  c.Id=teacherId
+  ORDER BY avgscore DESC
+    </select>
+    <select id="getScoretableTotal" resultType="java.lang.Integer">
+    SELECT count(*) FROM avgscores,user,course
+     WHERE avgscores.teacherId=user.Id
+      AND  avgscores.courseId=course.Id
+ </select>
+    <select id="findanumber" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT count(*) FROM user,teaching
+    WHERE user.classId=teaching.classId
+    AND teacherId=#{teacherId}
+    </select>
+
+    <select id="findpnumber" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+ SELECT count(*) FROM grades,user,teaching
+ WHERE teaching.classId=user.classId
+ AND teaching.Id=teachingId
+ AND user.Id=grades.studentId
+ AND teaching.teacherId=#{teacherId}
+    </select>
+
+    <select id="classmatchData" parameterType="java.lang.Integer" resultType="com.tes1.evaluate.domain.BarDetail">
+          SELECT teaching.classId,className,ROUND(avg(score),3)*100 as avgscore FROM grades,user,teaching,classinfo
+ WHERE studentId=user.Id
+ AND teaching.Id=grades.teachingId
+ AND classinfo.Id=teaching.classId
+ AND teacherId=#{teacherId} group by className
+    </select>
+</mapper>

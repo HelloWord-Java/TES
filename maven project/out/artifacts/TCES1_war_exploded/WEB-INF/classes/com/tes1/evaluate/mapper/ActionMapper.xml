@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tes1.evaluate.mapper.ActionMapper">
+  <resultMap id="BaseResultMap" type="com.tes1.evaluate.domain.Action">
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="actionName" jdbcType="VARCHAR" property="actionName" />
+    <result column="actionUrl" jdbcType="VARCHAR" property="actionUrl" />
+    <result column="parentId" jdbcType="INTEGER" property="parentId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id, actionName, actionUrl, parentId
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from action
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 找到功能连接的用户id -->
+  <select id="findActionListByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	       select distinct a.Id, a.actionName, a.actionUrl, a.parentId 
+	        from action a  
+	  inner join scaleaction b on a.Id=b.actionId  
+	  inner join userscale c on b.scaleId=c.scaleId  
+	       where c.userId=#{userId,jdbcType=INTEGER}  
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from action
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tes1.evaluate.domain.Action">
+    insert into action (Id, actionName, actionUrl, 
+      parentId)
+    values (#{id,jdbcType=INTEGER}, #{actionName,jdbcType=VARCHAR}, #{actionUrl,jdbcType=VARCHAR}, 
+      #{parentId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tes1.evaluate.domain.Action">
+    insert into action
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        Id,
+      </if>
+      <if test="actionName != null">
+        actionName,
+      </if>
+      <if test="actionUrl != null">
+        actionUrl,
+      </if>
+      <if test="parentId != null">
+        parentId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="actionName != null">
+        #{actionName,jdbcType=VARCHAR},
+      </if>
+      <if test="actionUrl != null">
+        #{actionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tes1.evaluate.domain.Action">
+    update action
+    <set>
+      <if test="actionName != null">
+        actionName = #{actionName,jdbcType=VARCHAR},
+      </if>
+      <if test="actionUrl != null">
+        actionUrl = #{actionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parentId = #{parentId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tes1.evaluate.domain.Action">
+    update action
+    set actionName = #{actionName,jdbcType=VARCHAR},
+      actionUrl = #{actionUrl,jdbcType=VARCHAR},
+      parentId = #{parentId,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 找到功能连接的用户id+++++++++++++ -->
+  <select id="findAction" parameterType="com.tes1.evaluate.domain.Action" resultType="com.tes1.evaluate.domain.Action">
+		SELECT * from action
+	</select>
+ <!--    <select id="findAction" parameterType="com.tes1.evaluate.domain.Action" resultType="com.tes1.evaluate.domain.Action">
+		SELECT * from action where id in
+		<foreach item="actions" index="index" collection="list" open="(" separator="," close=")">  
+  			#{actions}  
+ 	</foreach>  
+	</select>--> 
+		 <select id="AAfindAction" parameterType="com.tes1.evaluate.domain.scaleAction" resultType="com.tes1.evaluate.domain.Action">
+		SELECT actionName FROM action WHERE id IN
+	    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">  
+	        #{item.actionId}  
+	    </foreach>    
+	</select>
+<select id="getActionListTotal" parameterType="java.lang.String" resultType="java.lang.Integer">
+    SELECT count(*)    
+      FROM action 
+     WHERE 1=1
+     <if test="_parameter != '%%'">  
+	    AND actionName LIKE #{_parameter,jdbcType=VARCHAR}  
+	</if>  
+ </select>
+<select id="getActionList" resultType="com.tes1.evaluate.domain.Action">
+   SELECT *
+     FROM action 
+    WHERE 1=1
+    <if test="filter != '%%'">  
+    AND actionName LIKE #{filter,jdbcType=VARCHAR}  
+</if>  
+ ORDER BY id
+   LIMIT #{page},#{rows}
+</select>
+ <insert id="addAction" parameterType="com.tes1.evaluate.domain.Action">
+		INSERT INTO
+		action(actionName,actionUrl,parentId)
+		VALUES(#{actionName},#{actionUrl},#{parentId})
+ </insert>
+ <select id="findActionById" resultType="com.tes1.evaluate.domain.Action">
+   SELECT *
+   FROM action 
+   WHERE id=#{id}
+</select>
+<delete id="deleteActionInfoByIds">  
+   DELETE FROM action WHERE id IN
+	<foreach collection="list" item="id" separator="," open="(" close=")">
+       #{id}
+    </foreach>  
+</delete> 
+<update id="updateActionById" parameterType="com.tes1.evaluate.domain.Action">
+		UPDATE  action SET
+		actionName=#{actionName},actionUrl=#{actionUrl},parentId=#{parentId}
+		WHERE id=#{id}
+</update>
+</mapper>

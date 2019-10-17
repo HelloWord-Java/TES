@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tes1.evaluate.mapper.DepartmentMapper">
+  <resultMap id="BaseResultMap" type="com.tes1.evaluate.domain.Department">
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="departmentName" jdbcType="VARCHAR" property="departmentName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id,departmentName,DeptPid
+  </sql>
+  <!--获取所有数据行数和页数 -->
+<select id="getDepartmentList" resultType="com.tes1.evaluate.domain.Department">
+    select  Id,departmentName,DeptPid
+    from department
+    where 1 = 1
+    <if test="filter != '%%'">  
+	    AND departmentName LIKE #{filter,jdbcType=VARCHAR}  
+	</if>  
+  ORDER BY id
+    LIMIT #{page},#{rows}
+  </select>
+  <!-- 获取所有数据总条数 -->
+  <select id="getDepartmentListTotal" parameterType="java.lang.String" resultType="java.lang.Integer">
+    SELECT count(*)    
+      FROM department 
+     WHERE 1=1
+     <if test="_parameter != '%%'">  
+	    AND departmentName LIKE #{_parameter,jdbcType=VARCHAR}
+	</if>  
+  </select> 
+    <!-- 查找所有数据 -->
+   <select id="finddepartmentlist" resultType="com.tes1.evaluate.domain.Department">
+	SELECT * FROM department
+	</select>
+ <!--增加班级 -->
+ <insert id="addDepartment" parameterType="com.tes1.evaluate.domain.Department">
+    insert into department(departmentName,DeptPid)
+    values (#{departmentName,jdbcType=VARCHAR},#{DeptPid})
+  </insert>
+  
+<select id="findalldepartment" parameterType="com.tes1.evaluate.domain.Department" resultType="com.tes1.evaluate.domain.Department">
+select 
+<include refid="Base_Column_List"/>
+from department    where 1=1
+   <if test="departmentName!=null and departmentName!=''">
+   and departmentName like concat(concat('%',#{departmentName}),'%')
+   </if>
+</select>
+  <!--修改-->
+  <!--修改班级 找id -->
+    <select id="findDepartmentById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+SELECT 
+ <include refid="Base_Column_List" />
+    from department where Id=#{id}
+</select>
+  <update id="updateDepartment" parameterType="com.tes1.evaluate.domain.Department">
+   update department
+    <set>
+      <if test="departmentName != null">
+        departmentName = #{departmentName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  	<select id="findDepartment" parameterType="com.tes1.evaluate.domain.Department" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from department
+  </select>
+    <!--删除 -->
+    <delete id="deleteDepartmentById" >
+    delete from department
+    where Id IN
+	<foreach collection="list" item="Id" separator="," open="(" close=")">
+       #{Id}
+    </foreach>  
+  </delete>
+</mapper>

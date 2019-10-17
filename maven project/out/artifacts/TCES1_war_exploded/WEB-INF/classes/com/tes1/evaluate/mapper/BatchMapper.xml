@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tes1.evaluate.mapper.BatchMapper">
+  <resultMap id="BaseResultMap" type="com.tes1.evaluate.domain.Batch">
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="batchName" jdbcType="VARCHAR" property="batchName" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id, batchName,state
+  </sql>
+
+  <select id="findbatchid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  select 
+    <include refid="Base_Column_List" />
+    from batch where Id=#{Id}
+  </select>
+
+    <select id="findbatchNameList"  resultMap="BaseResultMap">
+    SELECT *    
+      FROM batch  
+  </select>
+
+
+    <select id="getBatchList" resultType="com.tes1.evaluate.domain.Batch">
+    select Id,batchName,state
+    from batch
+    where 1 = 1
+    <if test="filter != '%%'">  
+	    AND batchName LIKE #{filter,jdbcType=VARCHAR}  
+	</if>  
+  ORDER BY id
+    LIMIT #{page},#{rows}
+  </select>
+  
+  <select id="getBatchListTotal" parameterType="java.lang.String" resultType="java.lang.Integer">
+    SELECT count(*)    
+      FROM batch 
+     WHERE 1=1
+     <if test="_parameter != '%%'">  
+	    AND batchName LIKE #{_parameter,jdbcType=VARCHAR}  
+	</if>  
+  </select> 
+  <select id="selectByPrimaryKey" parameterType="com.tes1.evaluate.domain.Batch" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from batch
+  </select>
+  <!-- 删除批次-->
+  <delete id="deleteByPrimaryKey">  
+   DELETE FROM batch WHERE id IN
+	<foreach collection="list" item="id" separator="," open="(" close=")">
+       #{id}
+    </foreach>  
+	</delete> 
+  
+  <insert id="insert" parameterType="com.tes1.evaluate.domain.Batch">
+    insert into batch (Id,timeEnd,state)
+    values (#{id,jdbcType=INTEGER}, #{batchName,jdbcType=VARCHAR},#{state,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tes1.evaluate.domain.Batch">
+    insert into batch
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        Id,
+      </if>
+      <if test="batchName != null">
+        batchName,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="batchName != null">
+        #{batchName,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tes1.evaluate.domain.Batch">
+    update batch
+    <set>
+      <if test="batchName != null">
+        batchName = #{batchName,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="state != null">
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.tes1.evaluate.domain.Batch">
+    update batch
+    set batchName = #{batchName,jdbcType=VARCHAR},
+      
+      state = #{state,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

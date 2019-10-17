@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tes1.evaluate.mapper.QuotaMapper">
+  <resultMap id="BaseResultMap" type="com.tes1.evaluate.domain.Quota">
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="quotaName" jdbcType="VARCHAR" property="quotaName" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="weight" jdbcType="REAL" property="weight" />
+    <result column="parentId" jdbcType="INTEGER" property="parentId" />
+    <result column="isLeaf" jdbcType="BIT" property="isLeaf" />
+    <result column="formula" jdbcType="VARCHAR" property="formula" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="isDelete" jdbcType="BIT" property="isDelete" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+  </resultMap>
+  <resultMap id="ListResultMap" type="com.tes1.evaluate.domain.Quota">
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="quotaName" jdbcType="VARCHAR" property="quotaName" />
+    <result column="parentId" jdbcType="INTEGER" property="parentId" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id, quotaName, type, weight, parentId, isLeaf, formula, remark, isDelete
+  </sql>
+  <select id="findquotaName" parameterType="java.lang.String" resultMap="BaseResultMap">
+  select 
+  <include refid="Base_Column_List" />
+  FROM quota where  parentId =(SELECT Id FROM quota where quotaName in (${_parameter}))
+  </select>
+  <select id="findvalue" parameterType="java.lang.String" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  FROM quota where quotaName in (${_parameter})
+  </select>
+  <select id="selectByParentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from quota
+    where parentId = #{id,jdbcType=INTEGER}
+    and isDelete = 0;
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from quota
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from quota
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tes1.evaluate.domain.Quota">
+    insert into quota (Id, quotaName, type, 
+      weight, parentId, isLeaf, 
+      formula, remark, isDelete
+      )
+    values (#{id,jdbcType=INTEGER}, #{quotaName,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
+      #{weight,jdbcType=REAL}, #{parentId,jdbcType=INTEGER}, #{isLeaf,jdbcType=BIT}, 
+      #{formula,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{isDelete,jdbcType=BIT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tes1.evaluate.domain.Quota">
+    insert into quota
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        Id,
+      </if>
+      <if test="quotaName != null">
+        quotaName,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="parentId != null">
+        parentId,
+      </if>
+      <if test="isLeaf != null">
+        isLeaf,
+      </if>
+      <if test="formula != null">
+        formula,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="isDelete != null">
+        isDelete,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="quotaName != null">
+        #{quotaName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=REAL},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="isLeaf != null">
+        #{isLeaf,jdbcType=BIT},
+      </if>
+      <if test="formula != null">
+        #{formula,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tes1.evaluate.domain.Quota">
+    update quota
+    <set>
+      <if test="quotaName != null">
+        quotaName = #{quotaName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=REAL},
+      </if>
+      <if test="parentId != null">
+        parentId = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="isLeaf != null">
+        isLeaf = #{isLeaf,jdbcType=BIT},
+      </if>
+      <if test="formula != null">
+        formula = #{formula,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        isDelete = #{isDelete,jdbcType=BIT},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tes1.evaluate.domain.Quota">
+    update quota
+    set quotaName = #{quotaName,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      weight = #{weight,jdbcType=REAL},
+      parentId = #{parentId,jdbcType=INTEGER},
+      isLeaf = #{isLeaf,jdbcType=BIT},
+      formula = #{formula,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      isDelete = #{isDelete,jdbcType=BIT}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="findQuotaList" resultMap="BaseResultMap">
+  	select Id, quotaName,type,weight,parentId,isLeaf,formula,remark,sort from quota where isDelete=0
+  </select>
+  <insert id="AddQuota" parameterType="com.tes1.evaluate.domain.Quota" useGeneratedKeys="true">
+		INSERT INTO
+		quota(quotaName,parentId,weight)
+		VALUES(#{quotaName},#{parentId},#{weight})
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+   		 </selectKey>
+  </insert>
+    <update id="updateQuotaById" parameterType="com.tes1.evaluate.domain.Quotaid">
+    update quota
+    set weight = 1,
+      parentId = #{parentIdd,jdbcType=INTEGER}
+    where Id = #{idd,jdbcType=INTEGER}
+  </update>
+  <insert id="addQuotaByExcel" parameterType="com.tes1.evaluate.domain.Quota">
+INSERT INTO
+		quota(quotaName,parentId,weight)
+		VALUES(#{quotaName},#{parentId},#{weight})
+  </insert>
+  <select id="findIdByName" parameterType="com.tes1.evaluate.domain.Quota" resultType="com.tes1.evaluate.domain.Quota">
+        select * from quota
+        where quotaName=#{quotaName}and weight=#{weight}and parentId=#{parentId}
+    </select>
+</mapper>

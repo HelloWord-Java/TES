@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tes1.evaluate.mapper.ScaleMapper">
+  <resultMap id="BaseResultMap" type="com.tes1.evaluate.domain.Scale">
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="scaleName" jdbcType="VARCHAR" property="scaleName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id, scaleName
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from scale
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from scale
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tes1.evaluate.domain.Scale">
+    insert into scale (Id, scaleName)
+    values (#{id,jdbcType=INTEGER}, #{scaleName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tes1.evaluate.domain.Scale">
+    insert into scale
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        Id,
+      </if>
+      <if test="scaleName != null">
+        scaleName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="scaleName != null">
+        #{scaleName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.tes1.evaluate.domain.Scale">
+    update scale
+    <set>
+      <if test="scaleName != null">
+        scaleName = #{scaleName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tes1.evaluate.domain.Scale">
+    update scale
+    set scaleName = #{scaleName,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <!-- 查找角色ID -->
+  <select id="findScaleId" parameterType="com.tes1.evaluate.domain.Scale" resultType="com.tes1.evaluate.domain.Scale">
+		SELECT scaleId from userscale where userId = #{Id}
+</select>
+<select id="findScale" parameterType="com.tes1.evaluate.domain.Scale" resultType="com.tes1.evaluate.domain.Scale">
+	SELECT * from scale
+</select>
+ <select id="AAfindScale" parameterType="com.tes1.evaluate.domain.userScale" resultType="com.tes1.evaluate.domain.Scale">
+	SELECT scaleName FROM scale WHERE id IN
+   <foreach collection="list" item="item" index="index" separator="," open="(" close=")">  
+       #{item.scaleId}  
+   </foreach>    
+</select>
+
+<!-- 模仿用户查询的角色 -->
+<select id="getScaleList" resultType="com.tes1.evaluate.domain.Scale">
+   SELECT *
+     FROM scale 
+    WHERE 1=1
+    <if test="filter != '%%'">  
+    AND scaleName LIKE #{filter,jdbcType=VARCHAR}  
+</if>  
+ ORDER BY id
+   LIMIT #{page},#{rows}
+ </select> 
+  <select id="getScaleListTotal" parameterType="java.lang.String" resultType="java.lang.Integer">
+    SELECT count(*)    
+      FROM scale 
+     WHERE 1=1
+     <if test="_parameter != '%%'">  
+	    AND scaleName LIKE #{_parameter,jdbcType=VARCHAR}  
+	</if>  
+  </select>
+  <!-- 增加 -->
+   <insert id="addScale" parameterType="com.tes1.evaluate.domain.Scale" useGeneratedKeys="true">
+		INSERT INTO
+		scale(scaleName)
+		VALUES(#{scaleName})
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+   		 </selectKey>
+  </insert>
+   <!-- 删除 -->
+    <delete id="deleteScaleInfoByIds">  
+    DELETE a,b FROM scaleaction a LEFT JOIN scale b ON a.scaleId = b.Id WHERE a.scaleId IN
+	<foreach collection="list" item="id" separator="," open="(" close=")">
+        #{id}
+    </foreach>  
+  </delete>
+<select id="findScaleById" parameterType="com.tes1.evaluate.domain.Scale" resultType="com.tes1.evaluate.domain.Scale">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM scale WHERE
+   Id=#{id}
+</select>
+  <!-- 修改 -->
+  <update id="updateScaleById" parameterType="com.tes1.evaluate.domain.Scale">
+		UPDATE  scale SET
+		scaleName=#{scaleName}
+		WHERE Id=#{id}
+	</update>
+
+</mapper>

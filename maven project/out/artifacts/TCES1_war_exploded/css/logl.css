@@ -1,0 +1,70 @@
+.lunbo{
+    width: 1900px;
+    height: 950px;
+    overflow:hidden;
+    position:absolute;
+    z-index: 1;
+}
+ul,li{ padding:0;
+    margin:0;
+    list-style:none;
+}
+.lunbo_ul{
+
+}
+.lunbo_li{
+    float: left;
+}
+.denglu{
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    width: 800px;
+    height: 400px;
+    margin-left: -400px;
+    z-index: 5;
+    border-radius:50px;
+}
+.denglu_1{
+    width: 800px;
+    font-size: 100px;
+    font-family: "Adobe 仿宋 Std R";
+    text-align: center;
+    color: white;
+}
+.denglu_2{
+    width: 800px;
+    font-size: 18px;
+    font-family: Arial;
+    text-align: center;
+    color: white;
+}
+.denglu_3{
+    color: white;
+    font-family: 方正舒体;
+    font-size: 23px;
+    margin-top: 80px;
+    margin-left: 100px;
+    width: 150px;
+    height: 40px;
+    background: #4264fb;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 3px #999;
+    outline: none;
+}
+.denglu_3:active  {
+    background-color: #0060df;
+    box-shadow: 0 2px #666;
+    transform: translateY(4px);
+}
+.hei{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1900px;
+    height: 950px;
+    background: black;
+    opacity: 0.3;
+    z-index: 3;
+}

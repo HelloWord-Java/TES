@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tes1.evaluate.mapper.CourseMapper">
+  <resultMap id="BaseResultMap" type="com.tes1.evaluate.domain.Course">
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="courseName" jdbcType="VARCHAR" property="courseName" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    Id, courseName
+  </sql>
+  
+   <!-- 删除课程 -->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    DELETE FROM course WHERE id IN
+	<foreach collection="list" item="id" separator="," open="(" close=")">
+       #{id}
+    </foreach>
+  </delete>
+  
+   <!-- 增加课程 -->
+  <insert id="insertSelective" parameterType="com.tes1.evaluate.domain.Course">
+    insert into course
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        Id,
+      </if>
+      <if test="courseName != null">
+        courseName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="courseName != null">
+        #{courseName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+
+  <!--修改课程 找id -->
+<select id="findCourseById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+SELECT 
+ <include refid="Base_Column_List" />
+    from course where Id=#{id}
+</select>
+	
+	
+ <!-- 修改课程 -->
+  <update id="updateByPrimaryKey" parameterType="com.tes1.evaluate.domain.Course">
+   update course
+    <set>
+      <if test="courseName != null">
+        courseName = #{courseName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  	<select id="findCourse" parameterType="com.tes1.evaluate.domain.Course" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from course
+  </select>
+  
+  
+  
+  
+  
+   <!-- 查询所有的课程列表-->
+  <select id="getcourseList" resultType="com.tes1.evaluate.domain.Course" >
+   SELECT * FROM course 
+   where 1=1
+      <if test="filter != '%%'">  
+	    AND courseName LIKE #{filter,jdbcType=VARCHAR}  
+	</if>
+   ORDER BY id
+   LIMIT #{page},#{rows} 
+  </select>
+   <select id="getcourselistTotal" parameterType="java.lang.String" resultType="java.lang.Integer" >
+   SELECT count(*) from course 
+   where 1=1
+    <if test="_parameter != '%%'">  
+	  AND courseName LIKE #{_parameter,jdbcType=VARCHAR}  
+	</if> 
+  </select>
+
+  <insert id="insert" parameterType="com.tes1.evaluate.domain.Course">
+    insert into course (Id, courseName)
+    values (#{id,jdbcType=INTEGER}, #{courseName,jdbcType=VARCHAR})
+  </insert>
+  
+<select id="" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from course
+    where couseName like concat(concat('%',#{courseName}),'%')
+  </select>
+ <select id="findcourselist"  resultMap="BaseResultMap">
+    select * from course
+  </select> 
+</mapper>

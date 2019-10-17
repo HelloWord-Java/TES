@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tes1.evaluate.mapper.QuotaoptionsMapper">
+  <resultMap id="BaseResultMap" type="com.tes1.evaluate.domain.Quotaoptions">
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="quotaId" jdbcType="INTEGER" property="quotaId" />
+    <result column="optionsName" jdbcType="VARCHAR" property="optionsName" />
+    <result column="score" jdbcType="REAL" property="score" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id, quotaId, optionsName, score
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from quotaoptions
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+   <select id="selectqutaoptions" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from quotaoptions
+    where quotaId = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from quotaoptions
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tes1.evaluate.domain.Quotaoptions">
+    insert into quotaoptions (Id, quotaId, optionsName, 
+      score)
+    values (#{id,jdbcType=INTEGER}, #{quotaId,jdbcType=INTEGER}, #{optionsName,jdbcType=VARCHAR}, 
+      #{score,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertoptions" parameterType="java.lang.Integer">
+      insert quotaoptions(quotaId,optionsName,score) values(#{quotaId},null,null)
+    </insert>
+  <insert id="insertSelective" parameterType="com.tes1.evaluate.domain.Quotaoptions">
+    insert into quotaoptions
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        Id,
+      </if>
+      <if test="quotaId != null">
+        quotaId,
+      </if>
+      <if test="optionsName != null">
+        optionsName,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="quotaId != null">
+        #{quotaId,jdbcType=INTEGER},
+      </if>
+      <if test="optionsName != null">
+        #{optionsName,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tes1.evaluate.domain.Quotaoptions">
+    update quotaoptions
+    <set>
+      <if test="quotaId != null">
+        quotaId = #{quotaId,jdbcType=INTEGER},
+      </if>
+      <if test="optionsName != null">
+        optionsName = #{optionsName,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=INTEGER},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tes1.evaluate.domain.Quotaoptions">
+    update quotaoptions
+    set quotaId = #{quotaId,jdbcType=INTEGER},
+      optionsName = #{optionsName,jdbcType=VARCHAR},
+      score = #{score,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="findQuotaoptionsListByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+     <include refid="Base_Column_List" />
+    from quotaoptions where quotaId=#{quotaId}
+  </select>
+  <insert id="addQuotaOptionsByExcel" parameterType="com.tes1.evaluate.domain.Quotaoptions">
+    insert into quotaoptions (quotaId, optionsName,
+      score)
+    values (#{quotaId}, #{optionsName},
+      #{score})
+  </insert>
+</mapper>

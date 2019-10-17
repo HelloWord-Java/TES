@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tes1.evaluate.mapper.ClassinfoMapper">
+  <resultMap id="BaseResultMap" type="com.tes1.evaluate.domain.Classinfo">
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="className" jdbcType="VARCHAR" property="className" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id,className
+  </sql>
+  
+ <!--增加班级 -->
+ <insert id="addClassinfo" parameterType="com.tes1.evaluate.domain.Classinfo">
+    insert into classinfo(className)
+    values (#{className,jdbcType=VARCHAR})
+  </insert>
+ 
+<select id="findallclassinfo" parameterType="com.tes1.evaluate.domain.Classinfo" resultType="com.tes1.evaluate.domain.Classinfo">
+select 
+<include refid="Base_Column_List"/>
+from classinfo    where 1=1
+   <if test="className!=null and className!=''">
+   and className like concat(concat('%',#{className}),'%')
+   </if>
+</select>
+
+<!--获取所有数据行数和页数 -->
+<select id="getClassinfoList" resultType="com.tes1.evaluate.domain.Classinfo">
+    select Id,className
+    from classinfo
+    where 1 = 1
+    <if test="filter != '%%'">  
+	    AND className LIKE #{filter,jdbcType=VARCHAR}  
+	</if>  
+  ORDER BY id
+    LIMIT #{page},#{rows}
+  </select>
+  <!-- 获取所有数据总条数 -->
+  <select id="getClassinfoListTotal" parameterType="java.lang.String" resultType="java.lang.Integer">
+    SELECT count(*)    
+      FROM classinfo 
+     WHERE 1=1
+     <if test="_parameter != '%%'">  
+	    AND className LIKE #{_parameter,jdbcType=VARCHAR}  
+	</if>  
+  </select> 
+    <!-- 查找所有数据 -->
+   <select id="findclassinfolist" resultType="com.tes1.evaluate.domain.Classinfo">
+	SELECT * FROM classinfo
+	</select>
+    <select id="findclasslist" resultType="com.tes1.evaluate.domain.Classinfo">
+	SELECT * FROM classinfo
+	</select>
+ <!--修改用户信息，先找到用户-->
+	<select id="findClassinfo" parameterType="com.tes1.evaluate.domain.Classinfo" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from classinfo
+  </select>
+  <update id="updateClassinfo" parameterType="com.tes1.evaluate.domain.Classinfo">
+   update classinfo
+    <set>
+      <if test="className != null">
+        className = #{className,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <!-- 修改时先找到id -->
+   <select id="findclassid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  select 
+    <include refid="Base_Column_List" />
+    from classinfo where Id=#{Id}
+  </select>
+    <!--删除 -->
+    <delete id="deleteClassinfoById">
+    delete from classinfo
+    where Id IN
+	<foreach collection="list" item="Id" separator="," open="(" close=")">
+       #{Id}
+    </foreach>  
+  </delete>
+
+  
+</mapper>
